@@ -1,0 +1,30 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: nifi
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        k8s-app: nifi
+    spec:
+      containers:
+        - image: "xemuliam/nifi:1.6.0"
+          imagePullPolicy: IfNotPresent
+          name: nifi
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8081
+              name: remote
+            - containerPort: 8443
+              name: https
+          volumeMounts:
+            - mountPath: /opt/datafiles
+              name: data-nifi
+      volumes:
+      - name: data-nifi
+        hostPath:
+          path: /data
+          type: Directory
